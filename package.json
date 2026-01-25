@@ -1,0 +1,32 @@
+{
+    "name": "smoriginals-gen",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "smos-gen for sort",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsup src/index.ts bin/smoriginals-gen.ts --format esm,cjs --dts",
+        "prepublishOnly": "npm run build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/smoriginals/smoriginals-gen.git"
+    },
+    "keywords": [],
+    "author": "smoriginals",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/smoriginals/smoriginals-gen/issues"
+    },
+    "homepage": "https://github.com/smoriginals/smoriginals-gen#readme",
+    "devDependencies": {
+        "@types/node": "^25.0.10",
+        "tsup": "^8.5.1",
+        "typescript": "^5.9.3"
+    },
+
+    "bin": {
+        "smoriginals-gen": "dist/bin/smoriginals-gen.js"
+    }
+}
