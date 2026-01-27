@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // src/index.ts
 function smosHello() {
   return "smoriginals-gen is running...";
