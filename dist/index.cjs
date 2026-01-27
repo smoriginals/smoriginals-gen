@@ -22,7 +22,8 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var src_exports = {};
 __export(src_exports, {
   smosHello: () => smosHello,
-  trimContext: () => trimContext
+  trimContext: () => trimContext,
+  version: () => version
 });
 module.exports = __toCommonJS(src_exports);
 function smosHello() {
@@ -31,8 +32,12 @@ function smosHello() {
 function trimContext(code, maxLines = 200) {
   return code.split("\n").slice(-maxLines).join("\n");
 }
+function version() {
+  return "0.1.0";
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   smosHello,
-  trimContext
+  trimContext,
+  version
 });

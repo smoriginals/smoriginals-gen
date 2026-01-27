@@ -7,7 +7,11 @@ function smosHello() {
 function trimContext(code, maxLines = 200) {
   return code.split("\n").slice(-maxLines).join("\n");
 }
+function version() {
+  return "0.1.0";
+}
 export {
   smosHello,
-  trimContext
+  trimContext,
+  version
 };
