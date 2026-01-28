@@ -33,5 +33,9 @@
     },
     "bin": {
         "smoriginals-gen": "./dist/bin/smoriginals-gen.js"
+    },
+    "dependencies": {
+        "dotenv": "^17.2.3",
+        "node-fetch": "^3.3.2"
     }
 }

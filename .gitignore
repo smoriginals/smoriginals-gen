@@ -399,3 +399,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Environment Veriables
+.env
+.env.local
+~/.smoriginals-gen.json
