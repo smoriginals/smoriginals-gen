@@ -27,7 +27,7 @@ __export(src_exports, {
 });
 module.exports = __toCommonJS(src_exports);
 function smosHello() {
-  return "smoriginals-gen is running...";
+  return "SMORIGINAlS O_O ";
 }
 function trimContext(code, maxLines = 200) {
   return code.split("\n").slice(-maxLines).join("\n");
