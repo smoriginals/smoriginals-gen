@@ -12,6 +12,7 @@ export function generateTree(
 
 ): void {
 
+    if (depth >= maxDepth) return;
     const entries: fs.Dirent[] = fs.readdirSync(dir, { withFileTypes: true });
 
     entries.forEach((entry: fs.Dirent, index: number) => {
@@ -25,7 +26,7 @@ export function generateTree(
         let displayName: string;
 
         if (entry.isDirectory()) {
-            displayName = `📁 ${chalk.yellow(entry.name)}`;
+            displayName = `📁 ${chalk.bold.yellow(entry.name)}`;
         } else {
             const ext = path.extname(entry.name).slice(1);
             const style = FILE_STYLES[ext];
@@ -41,7 +42,7 @@ export function generateTree(
 
         if (entry.isDirectory()) {
             const newPrefix = prefix + (isLast ? "   " : "│  ");
-            generateTree(path.join(dir, entry.name), newPrefix, ignore);
+            generateTree(path.join(dir, entry.name), newPrefix, ignore,depth+1,maxDepth);
         }
     });
 }

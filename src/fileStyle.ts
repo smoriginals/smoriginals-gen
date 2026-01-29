@@ -27,7 +27,6 @@ export const FILE_STYLES: Record<string, FileStyle> = {
     yml: { icon: "⚙️", color: chalk.magenta },
     yaml: { icon: "⚙️", color: chalk.magenta },
     env: { icon: "🔐", color: chalk.red },
-
     // Docs
     md: { icon: "📘", color: chalk.blue },
     txt: { icon: "📄", color: chalk.white },
