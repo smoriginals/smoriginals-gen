@@ -1,5 +1,5 @@
 {
-    "name": "folderplus",
+    "name": "@smoriginals/folderplus",
     "version": "0.1.0",
     "description": "CLI utility for developers: trim code context, generate folder trees, and more",
     "type": "module",
