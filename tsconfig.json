@@ -1,10 +1,15 @@
 {
     "compilerOptions": {
         "target": "es2020",
-        "module": "esnext",
-        "moduleResolution": "node",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "declaration": true,
         "outDir": "dist",
-        "strict": true
-    }
+        "rootDir": "src",
+        "strict": true,
+        "types": [ "node" ],
+        "esModuleInterop": true,
+        "skipLibCheck": true
+    },
+    "exclude": [ "node_modules", "dist" ]
 }

@@ -403,4 +403,3 @@ FodyWeavers.xsd
 # Environment Veriables
 .env
 .env.local
-~/.smoriginals-gen.json

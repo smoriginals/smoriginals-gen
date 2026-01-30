@@ -1,5 +1,5 @@
-declare function smosHello(): string;
-declare function trimContext(code: string, maxLines?: number): string;
+declare function status(): string;
 declare function version(): string;
+declare function help(): string;
 
-export { smosHello, trimContext, version };
+export { help, status, version };

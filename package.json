@@ -1,44 +1,49 @@
 {
-    "name": "smoriginals-gen",
+    "name": "smoriginals",
     "version": "0.1.0",
+    "description": "CLI utility for developers: trim code context, generate folder trees, and more",
     "type": "module",
-    "description": "smos-gen for sort",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
-        }
+
+    "bin": {
+        "smoriginals": "./dist/cli.js"
     },
+
+    "main": "./dist/index.js",
+    "exports": {
+        ".": "./dist/index.js"
+    },
+
+    "files": [
+        "dist"
+    ],
+
     "scripts": {
-        "build": "tsup",
+        "build": "tsup src/cli.ts src/index.ts --format esm --dts --clean",
         "prepublishOnly": "npm run build"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/smoriginals/smoriginals-gen.git"
+
+    "keywords": [
+        "cli",
+        "tree",
+        "folder-structure",
+        "developer-tools"
+    ],
+
+    "author": "Suraj Maurya",
+    "license": "MIT",
+
+    "engines": {
+        "node": ">=18"
     },
-    "keywords": [],
-    "author": "smoriginals",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/smoriginals/smoriginals-gen/issues"
-    },
-    "homepage": "https://github.com/smoriginals/smoriginals-gen#readme",
-    "devDependencies": {
-        "@types/node": "^25.0.10",
-        "eslint": "^9.39.2",
-        "tsup": "^8.5.1",
-        "typescript": "^5.9.3"
-    },
-    "bin": {
-        "smoriginals-gen": "./dist/bin/smoriginals-gen.js"
-    },
+
     "dependencies": {
-        "chalk": "^5.6.2",
-        "dotenv": "^17.2.3",
-        "fs": "^0.0.1-security",
-        "node-fetch": "^3.3.2",
-        "path": "^0.12.7"
+        "chalk": "^5.3.0",
+        "ora": "^9.1.0"
+    },
+
+    "devDependencies": {
+        "@types/node": "^20.11.0",
+        "tsup": "^8.5.1",
+        "typescript": "^5.3.3"
     }
 }

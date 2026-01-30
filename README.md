@@ -1,2 +1,2 @@
-# smoriginals-gen
+# smoriginals
 my first npm package

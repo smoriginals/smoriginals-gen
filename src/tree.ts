@@ -1,49 +1,51 @@
 ﻿import * as fs from "fs";
 import * as path from "path";
-import chalk from 'chalk';
+import chalk from "chalk";
 import { FILE_STYLES } from './fileStyle';
+import { TreeFilter } from "./types.js";
 
 export function generateTree(
     dir: string,
-    prefix: string = "",
+    prefix = "",
     ignore: Set<string> = new Set(),
-    depth= 0,
-    maxDepth = Infinity,
-
+    filter: TreeFilter = "all",
+    depth = 0,
+    maxDepth = Infinity
 ): void {
 
     if (depth >= maxDepth) return;
-    const entries: fs.Dirent[] = fs.readdirSync(dir, { withFileTypes: true });
 
-    entries.forEach((entry: fs.Dirent, index: number) => {
-        if (ignore.has(entry.name)) return;
+    const entries = fs
+        .readdirSync(dir, { withFileTypes: true })
+        .filter(entry => !ignore.has(entry.name));
 
+    entries.forEach((entry, index) => {
         const isLast = index === entries.length - 1;
         const pointer = isLast ? "└─ " : "├─ ";
-
         const line = chalk.dim(prefix + pointer);
+        const fullPath = path.join(dir, entry.name);
 
-        let displayName: string;
-
+        // 📁 Directory
         if (entry.isDirectory()) {
-            displayName = `📁 ${chalk.bold.yellow(entry.name)}`;
-        } else {
+            if (filter !== "files") {
+                console.log(line + `📁 ${chalk.bold.yellow(entry.name)}`);
+            }
+
+            const newPrefix = prefix + (isLast ? "   " : "│  ");
+            generateTree(fullPath, newPrefix, ignore, filter, depth + 1, maxDepth);
+            return;
+        }
+
+        // 📄 File
+        if (filter !== "dirs") {
             const ext = path.extname(entry.name).slice(1);
             const style = FILE_STYLES[ext];
 
-            if (style) {
-                displayName = `${style.icon} ${style.color(entry.name)}`;
-            } else {
-                displayName = `📄 ${chalk.gray(entry.name)}`;
-            }
-        }
+            const display = style
+                ? `${style.icon} ${style.color(entry.name)}`
+                : `📄 ${chalk.gray(entry.name)}`;
 
-        console.log(line + displayName);
-
-        if (entry.isDirectory()) {
-            const newPrefix = prefix + (isLast ? "   " : "│  ");
-            generateTree(path.join(dir, entry.name), newPrefix, ignore,depth+1,maxDepth);
+            console.log(line + display);
         }
     });
 }
-
