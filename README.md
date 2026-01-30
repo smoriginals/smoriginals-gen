@@ -1,2 +1,2 @@
-# smoriginals
+# folderplus
 my first npm package

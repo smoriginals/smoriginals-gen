@@ -3,20 +3,20 @@
 // src/index.ts
 import chalk from "chalk";
 function status() {
-  return "O_O SMORIGINALS O_O";
+  return "O_O folderplus O_O";
 }
 function version() {
   return "v0.1.0";
 }
 function help() {
   return `
-${chalk.bold.cyan("SMORIGINALS")} ${chalk.dim("O_O Developer utility CLI")}
+${chalk.bold.cyan("folderplus")} ${chalk.dim("O_O Developer utility CLI")}
 
 ${chalk.bold("Usage:")}
-  smoriginals <command> [options]
+  folderplus <command> [options]
 
 ${chalk.bold("Commands:")}
-  ${chalk.green("status")}                 Check if smoriginals is working
+  ${chalk.green("status")}                 Check if folderplus is working
   ${chalk.green("tree")}                   Display project folder structure
   ${chalk.green("version")}                Show CLI version
   ${chalk.green("help")}                   Show this help message
@@ -29,12 +29,12 @@ ${chalk.bold("Tree Options:")}
   ${chalk.yellow("--json")}                 Output tree as JSON
 
 ${chalk.bold("Examples:")}
-  smoriginals tree
-  smoriginals tree --depth 3
-  smoriginals tree --ignore node_modules,dist
-  smoriginals tree --files-only
-  smoriginals tree --dirs-only
-  smoriginals tree --json > output.json
+  folderplus tree
+  folderplus tree --depth 3
+  folderplus tree --ignore node_modules,dist
+  folderplus tree --files-only
+  folderplus tree --dirs-only
+  folderplus tree --json > output.json
 `;
 }
 

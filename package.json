@@ -1,10 +1,10 @@
 {
-    "name": "smoriginals",
+    "name": "folderplus",
     "version": "0.1.0",
     "description": "CLI utility for developers: trim code context, generate folder trees, and more",
     "type": "module",
     "bin": {
-        "smoriginals": "dist/cli.js"
+        "folderplus": "dist/cli.js"
     },
     "main": "./dist/index.js",
     "exports": {
@@ -23,7 +23,7 @@
         "folder-structure",
         "developer-tools"
     ],
-    "author": "Suraj Maurya",
+    "author": "smoriginals",
     "license": "MIT",
     "engines": {
         "node": ">=18"
