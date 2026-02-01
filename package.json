@@ -1,6 +1,6 @@
 {
     "name": "folderplus",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "CLI utility for developers: trim code context, generate folder trees, and more",
     "type": "module",
     "bin": {
