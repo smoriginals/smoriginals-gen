@@ -3,10 +3,10 @@
 // src/index.ts
 import chalk from "chalk";
 function status() {
-  return "O_O folderplus O_O";
+  return "O_O @SMORIGINALS folderplus O_O";
 }
 function version() {
-  return "v0.1.0";
+  return "v0.1.2";
 }
 function help() {
   return `
