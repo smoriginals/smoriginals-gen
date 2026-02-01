@@ -1,4 +1,4 @@
-
+# 
 # 📁folderplus
 
 A powerful, customizable CLI tool to visualize your project structure with icons, filters, sorting, JSON output, and more.
@@ -50,12 +50,12 @@ folderplus tree --files-only
 ```
 - Directories only
 ```
-smoriginals tree --dirs-only
+folderplus tree --dirs-only
 ```
 
 - Limit depth
 ```
-smoriginals tree --depth 2
+folderplus tree --depth 2
 ```
 
 
@@ -96,7 +96,7 @@ smoriginals tree --depth 2
 
 #### Output tree as JSON
 ```
-smoriginals tree --json > output.json
+folderplus tree --json > output.json
 ```
 #### Output:
 ```

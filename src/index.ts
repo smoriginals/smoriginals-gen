@@ -6,7 +6,7 @@ export function status() {
 }
 
 export function version() {
-    return "v0.1.2";
+    return "v0.1.3";
 }
 
 export function help() {
