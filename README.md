@@ -125,6 +125,8 @@ Entries from .gitignore
 
 # 📸 Screenshots
 
+![Preview](https://res.cloudinary.com/smoriginals/image/upload/v1769943852/Screenshot_60_ea9lrr.png)
+
 # 🛠️ Built With
 - Node.js
 - TypeScript
