@@ -147,7 +147,6 @@ __Contributions are welcome!__
 
 ## ⭐ Support
 #### 💫 If you find this tool useful:
-- 📧 If any command is not work please report us.
 - ⭐ Star the repo
 - 📢 Share with others
 
