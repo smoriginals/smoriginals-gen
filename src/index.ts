@@ -1,12 +1,11 @@
 import chalk from "chalk";
 
-
 export function status() {
     return "O_O @SMORIGINALS folderplus O_O";
 }
 
 export function version() {
-    return "v0.1.4";
+    return "v0.1.7";
 }
 
 export function help() {
@@ -27,6 +26,8 @@ ${chalk.bold("Tree Options:")}
   ${chalk.yellow("--ignore <a,b,c>")}       Ignore files or folders
   ${chalk.yellow("--files-only")}           Show only files
   ${chalk.yellow("--dirs-only")}            Show only directories
+  ${chalk.yellow("--only <ext,ext>")}       Show only files with given extensions
+  ${chalk.yellow("--no-icons")}             Disable emoji icons
   ${chalk.yellow("--json")}                 Output tree as JSON
 
 ${chalk.bold("Examples:")}
@@ -35,6 +36,8 @@ ${chalk.bold("Examples:")}
   folderplus tree --ignore node_modules,dist
   folderplus tree --files-only
   folderplus tree --dirs-only
+  folderplus tree --only ts,js
+  folderplus tree --no-icons
   folderplus tree --json > output.json
 `;
 }

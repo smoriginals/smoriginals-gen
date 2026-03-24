@@ -1,4 +1,5 @@
 ﻿import * as fs from "fs";
+import * as fs from "fs";
 import * as path from "path";
 import chalk from "chalk";
 import { FILE_STYLES } from './fileStyle.js';
@@ -10,10 +11,10 @@ export function generateTree(
     ignore: Set<string> = new Set(),
     filter: TreeFilter = "all",
     depth = 0,
-    maxDepth = Infinity
+    maxDepth = Infinity,
+    icons = true,
+    onlyExts?: Set<string>
 ): void {
-
-    if (depth >= maxDepth) return;
 
     const entries = fs
         .readdirSync(dir, { withFileTypes: true })
@@ -25,25 +26,34 @@ export function generateTree(
         const line = chalk.dim(prefix + pointer);
         const fullPath = path.join(dir, entry.name);
 
-        // 📁 Directory
+        // Directory
         if (entry.isDirectory()) {
             if (filter !== "files") {
-                console.log(line + `📁 ${chalk.bold.yellow(entry.name)}`);
+                const label = icons ? `📁 ${chalk.bold.yellow(entry.name)}` : chalk.bold.yellow(entry.name);
+                console.log(line + label);
             }
 
-            const newPrefix = prefix + (isLast ? "   " : "│  ");
-            generateTree(fullPath, newPrefix, ignore, filter, depth + 1, maxDepth);
+            if (depth + 1 < maxDepth) {
+                const newPrefix = prefix + (isLast ? "   " : "│  ");
+                generateTree(fullPath, newPrefix, ignore, filter, depth + 1, maxDepth, icons, onlyExts);
+            }
             return;
         }
 
-        // 📄 File
+        // File
         if (filter !== "dirs") {
             const ext = path.extname(entry.name).slice(1);
+            if (onlyExts && !onlyExts.has(ext)) return;
             const style = FILE_STYLES[ext];
 
-            const display = style
-                ? `${style.icon} ${style.color(entry.name)}`
-                : `📄 ${chalk.gray(entry.name)}`;
+            let display: string;
+            if (!icons) {
+                display = style ? style.color(entry.name) : chalk.gray(entry.name);
+            } else {
+                display = style
+                    ? `${style.icon} ${style.color(entry.name)}`
+                    : `📄 ${chalk.gray(entry.name)}`;
+            }
 
             console.log(line + display);
         }

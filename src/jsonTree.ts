@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as fs from "fs";
 import * as path from "path";
 import { TreeNode, TreeFilter } from "./types.js";
 
@@ -7,15 +8,11 @@ export function generateJsonTree(
     ignore: Set<string>,
     depth: number,
     maxDepth: number,
-    filter: TreeFilter = "all"
+    filter: TreeFilter = "all",
+    onlyExts?: Set<string>
 ): TreeNode {
 
     const name = path.basename(dir);
-
-    if (depth >= maxDepth) {
-        return { name, type: "directory", children: [] };
-    }
-
     const children: TreeNode[] = [];
 
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -25,19 +22,17 @@ export function generateJsonTree(
 
         if (entry.isDirectory()) {
             if (filter !== "files") {
-                children.push(
-                    generateJsonTree(
-                        fullPath,
-                        ignore,
-                        depth + 1,
-                        maxDepth,
-                        filter
-                    )
-                );
+                const child = depth + 1 < maxDepth
+                    ? generateJsonTree(fullPath, ignore, depth + 1, maxDepth, filter, onlyExts)
+                    : { name: entry.name, type: "directory" as const, children: [] };
+                children.push(child);
             }
         } else {
             if (filter !== "dirs") {
-                children.push({ name: entry.name, type: "file" });
+                const ext = path.extname(entry.name).slice(1);
+                if (!onlyExts || onlyExts.has(ext)) {
+                    children.push({ name: entry.name, type: "file" });
+                }
             }
         }
     }

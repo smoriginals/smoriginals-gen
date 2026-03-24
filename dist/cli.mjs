@@ -6,7 +6,7 @@ function status() {
   return "O_O @SMORIGINALS folderplus O_O";
 }
 function version() {
-  return "v0.1.4";
+  return "v0.1.7";
 }
 function help() {
   return `
@@ -26,6 +26,8 @@ ${chalk.bold("Tree Options:")}
   ${chalk.yellow("--ignore <a,b,c>")}       Ignore files or folders
   ${chalk.yellow("--files-only")}           Show only files
   ${chalk.yellow("--dirs-only")}            Show only directories
+  ${chalk.yellow("--only <ext,ext>")}       Show only files with given extensions
+  ${chalk.yellow("--no-icons")}             Disable emoji icons
   ${chalk.yellow("--json")}                 Output tree as JSON
 
 ${chalk.bold("Examples:")}
@@ -34,6 +36,8 @@ ${chalk.bold("Examples:")}
   folderplus tree --ignore node_modules,dist
   folderplus tree --files-only
   folderplus tree --dirs-only
+  folderplus tree --only ts,js
+  folderplus tree --no-icons
   folderplus tree --json > output.json
 `;
 }
@@ -84,8 +88,7 @@ var FILE_STYLES = {
 };
 
 // src/tree.ts
-function generateTree(dir, prefix = "", ignore = /* @__PURE__ */ new Set(), filter = "all", depth = 0, maxDepth = Infinity) {
-  if (depth >= maxDepth) return;
+function generateTree(dir, prefix = "", ignore = /* @__PURE__ */ new Set(), filter = "all", depth = 0, maxDepth = Infinity, icons = true, onlyExts) {
   const entries = fs.readdirSync(dir, { withFileTypes: true }).filter((entry) => !ignore.has(entry.name));
   entries.forEach((entry, index) => {
     const isLast = index === entries.length - 1;
@@ -94,16 +97,25 @@ function generateTree(dir, prefix = "", ignore = /* @__PURE__ */ new Set(), filt
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       if (filter !== "files") {
-        console.log(line + `\u{1F4C1} ${chalk3.bold.yellow(entry.name)}`);
+        const label = icons ? `\u{1F4C1} ${chalk3.bold.yellow(entry.name)}` : chalk3.bold.yellow(entry.name);
+        console.log(line + label);
       }
-      const newPrefix = prefix + (isLast ? "   " : "\u2502  ");
-      generateTree(fullPath, newPrefix, ignore, filter, depth + 1, maxDepth);
+      if (depth + 1 < maxDepth) {
+        const newPrefix = prefix + (isLast ? "   " : "\u2502  ");
+        generateTree(fullPath, newPrefix, ignore, filter, depth + 1, maxDepth, icons, onlyExts);
+      }
       return;
     }
     if (filter !== "dirs") {
       const ext = path.extname(entry.name).slice(1);
+      if (onlyExts && !onlyExts.has(ext)) return;
       const style = FILE_STYLES[ext];
-      const display = style ? `${style.icon} ${style.color(entry.name)}` : `\u{1F4C4} ${chalk3.gray(entry.name)}`;
+      let display;
+      if (!icons) {
+        display = style ? style.color(entry.name) : chalk3.gray(entry.name);
+      } else {
+        display = style ? `${style.icon} ${style.color(entry.name)}` : `\u{1F4C4} ${chalk3.gray(entry.name)}`;
+      }
       console.log(line + display);
     }
   });
@@ -112,30 +124,23 @@ function generateTree(dir, prefix = "", ignore = /* @__PURE__ */ new Set(), filt
 // src/jsonTree.ts
 import * as fs2 from "fs";
 import * as path2 from "path";
-function generateJsonTree(dir, ignore, depth, maxDepth, filter = "all") {
+function generateJsonTree(dir, ignore, depth, maxDepth, filter = "all", onlyExts) {
   const name = path2.basename(dir);
-  if (depth >= maxDepth) {
-    return { name, type: "directory", children: [] };
-  }
   const children = [];
   for (const entry of fs2.readdirSync(dir, { withFileTypes: true })) {
     if (ignore.has(entry.name)) continue;
     const fullPath = path2.join(dir, entry.name);
     if (entry.isDirectory()) {
       if (filter !== "files") {
-        children.push(
-          generateJsonTree(
-            fullPath,
-            ignore,
-            depth + 1,
-            maxDepth,
-            filter
-          )
-        );
+        const child = depth + 1 < maxDepth ? generateJsonTree(fullPath, ignore, depth + 1, maxDepth, filter, onlyExts) : { name: entry.name, type: "directory", children: [] };
+        children.push(child);
       }
     } else {
       if (filter !== "dirs") {
-        children.push({ name: entry.name, type: "file" });
+        const ext = path2.extname(entry.name).slice(1);
+        if (!onlyExts || onlyExts.has(ext)) {
+          children.push({ name: entry.name, type: "file" });
+        }
       }
     }
   }
@@ -165,6 +170,12 @@ if (args.length === 0 || args.includes("help")) {
   console.log(help());
   process.exit(0);
 }
+function getArgValue(flag) {
+  const idx = args.indexOf(flag);
+  if (idx === -1) return void 0;
+  const val = args[idx + 1];
+  return val && !val.startsWith("--") ? val : void 0;
+}
 switch (args[0]) {
   case "status":
     console.log(status());
@@ -173,19 +184,26 @@ switch (args[0]) {
     console.log(version());
     break;
   case "tree": {
+    const ignoreArg = getArgValue("--ignore");
+    const extraIgnore = ignoreArg ? ignoreArg.split(",").map((s) => s.trim()).filter(Boolean) : [];
     const ignore = /* @__PURE__ */ new Set([
       "node_modules",
       ".git",
-      ...readGitIgnore(cwd)
+      ...readGitIgnore(cwd),
+      ...extraIgnore
     ]);
-    const depthIndex = args.indexOf("--depth");
-    const depth = depthIndex !== -1 ? Number(args[depthIndex + 1]) : Infinity;
+    const depthArg = getArgValue("--depth");
+    const parsedDepth = depthArg !== void 0 ? Number(depthArg) : NaN;
+    const maxDepth = !isNaN(parsedDepth) && parsedDepth >= 0 ? parsedDepth : Infinity;
     const filter = args.includes("--files-only") ? "files" : args.includes("--dirs-only") ? "dirs" : "all";
+    const icons = !args.includes("--no-icons");
+    const onlyArg = getArgValue("--only");
+    const onlyExts = onlyArg ? new Set(onlyArg.split(",").map((s) => s.trim()).filter(Boolean)) : void 0;
     if (args.includes("--json")) {
-      const tree = generateJsonTree(cwd, ignore, 0, depth, filter);
+      const tree = generateJsonTree(cwd, ignore, 0, maxDepth, filter, onlyExts);
       console.log(JSON.stringify(tree, null, 2));
     } else {
-      generateTree(cwd, "", ignore, filter, 0, depth);
+      generateTree(cwd, "", ignore, filter, 0, maxDepth, icons, onlyExts);
     }
     break;
   }
