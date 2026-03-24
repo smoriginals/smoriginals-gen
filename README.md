@@ -25,11 +25,13 @@ Inspired by the classic `tree` command — but modern, colorful, and developer-f
 # 📦 Installation
 
 ```
-
+npm install -g folderplus@latest
+```
+```
 npm i folderplus
+```
+```
 npm install folderplus
-npm install -g folderplus
-
 ```
 
 # ✔ Verify installation:
