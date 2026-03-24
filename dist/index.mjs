@@ -4,7 +4,7 @@ function status() {
   return "O_O @SMORIGINALS folderplus O_O";
 }
 function version() {
-  return "v0.1.7";
+  return "v0.1.8";
 }
 function help() {
   return `
