@@ -1,5 +1,4 @@
-# 
-# 📁folderplus
+# 📁 folderplus
 
 A powerful, customizable CLI tool to visualize your project structure with icons, filters, sorting, JSON output, and more.
 
@@ -7,22 +6,21 @@ Inspired by the classic `tree` command — but modern, colorful, and developer-f
 
 ---
 
-# ✨ Features
+## ✨ Features
 
-- 📁 Beautiful project tree with icons
-- 🔍 Filter files or directories only
-- 📦 Supports `.gitignore` automatically
-- 🎯 Filter by file extensions
-- 🚫 Exclude unwanted extensions
-- 🧩 Sorting by name or type
-- 🧾 JSON output (for tooling & automation)
-- 📊 Optional project statistics
-- ⚡ Fast and lightweight
-- 🖥️ Cross-platform (Windows / Linux / macOS)
+- Beautiful project tree with icons
+- Filter files or directories only
+- Supports `.gitignore` automatically
+- Filter by file extensions
+- Exclude unwanted extensions
+- Sorting by name or type
+- JSON output for tooling and automation
+- Fast and lightweight
+- Cross-platform: Windows, Linux, macOS
 
 ---
 
-# 📦 Installation
+## 📦 Installation
 
 ```
 npm install -g folderplus@latest
@@ -34,7 +32,7 @@ npm i folderplus
 npm install folderplus
 ```
 
-# ✔ Verify installation:
+Verify installation:
 
 ```
 folderplus version
@@ -61,46 +59,26 @@ folderplus tree --depth 2
 ```
 
 
-# 🎛️ Options & Flags
+# 🎛️ Options
 
-#### Flag Description
-```
---all
-```
-#### Show hidden files & folders
-```
---no-icons
-```
+| Flag | Description |
+|---|---|
+| `--all` | Show hidden files and folders |
+| `--no-icons` | Disable icons |
+| `--files-only` | Show only files |
+| `--dirs-only` | Show only directories |
+| `--depth <n>` | Limit tree depth |
+| `--only <ext>` | Filter by extensions, e.g. `js,ts` |
+| `--ignore <dirs>` | Exclude directories, e.g. `dist,build` |
+| `--json` | Output tree as JSON |
 
-#### Disable icons
-```
---files-only
-```
-#### Show only files
-```
---dirs-only
-```
+---
 
-#### Show only directories
-```
---depth <n>
-```
+## 🧾 JSON Output Example
 
-#### Limit tree depth
 ```
---only js,ts
+folderplus tree --json
 ```
-
-#### Sort by directory/file
-```
---json
-```
-
-#### Output tree as JSON
-```
-folderplus tree --json > output.json
-```
-#### Output:
 ```
 Json
 {
@@ -112,49 +90,24 @@ Json
   ]
 }
 ```
-# 🧠 How Ignore Works
 
-### folderplus automatically ignores:
-```
-node_modules
-.git
-Entries from .gitignore
-```
-#### You can add more using:
+---
+
+## 🧠 Ignore Behavior
+
+By default, folderplus ignores:
+
+- `node_modules`
+- `.git`
+- Entries listed in `.gitignore`
+
+Add custom ignores:
 ```
 --ignore dist,build,temp
 ```
 
-# 📸 Screenshots
+---
 
-![Preview](https://res.cloudinary.com/smoriginals/image/upload/v1769943852/Screenshot_60_ea9lrr.png)
+## Author
 
-# 🛠️ Built With
-- Node.js
-- TypeScript
-- Chalk
-- Ora
-
-# 🤝 Contributing
-
-__Contributions are welcome!__
-
-- Fork the repo
-- Create a feature branch
-- Commit your changes
-- Open a Pull Request
-
-# 📄 License
-#### MIT License © 2026 smoriginals
-
-## ⭐ Support
-#### 💫 If you find this tool useful:
-- ⭐ Star the repo
-- 📢 Share with others
-
-# Acknowledgements
-
-Continuous improvement is crucial for maintaining engagement and user satisfaction. If you need any assistance or feedback on upcoming features, feel free to share!
-# Author
-
-- [@smoriginals](https://github.com/smoriginals)
+Maintained by [@smoriginals](https://github.com/smoriginals)
