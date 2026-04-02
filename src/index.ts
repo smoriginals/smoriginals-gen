@@ -1,11 +1,11 @@
 import chalk from "chalk";
 
 export function status() {
-    return "O_O @SMORIGINALS folderplus O_O";
+    return "O_O folderplus O_O";
 }
 
 export function version() {
-    return "v0.1.8";
+    return "v0.1.9";
 }
 
 export function help() {
