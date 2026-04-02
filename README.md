@@ -26,9 +26,6 @@ Inspired by the classic `tree` command — but modern, colorful, and developer-f
 npm install -g folderplus@latest
 ```
 ```
-npm i folderplus
-```
-```
 npm install folderplus
 ```
 
