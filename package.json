@@ -1,6 +1,6 @@
 {
   "name": "folderplus",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Modern developer-friendly CLI tool to visualize project structures with icons, filtering, sorting, JSON output, and .gitignore support",
   "homepage": "https://github.com/smoriginals/folderplus",
   "repository": {
@@ -10,7 +10,6 @@
   "bugs": {
     "url": "https://github.com/smoriginals/folderplus/issues"
   },
-
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
   "bin": {
