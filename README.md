@@ -1,110 +1,200 @@
-# 📁 folderplus
+# FolderPlus
 
-A powerful, customizable CLI tool to visualize your project structure with icons, filters, sorting, JSON output, and more.
+Modern developer-friendly CLI tool to visualize project structures with icons, filtering, sorting, JSON output, and `.gitignore` support.
 
-Inspired by the classic `tree` command — but modern, colorful, and developer-friendly.
+![FolderPlus Logo](./assets/logo.png)
 
----
+![npm version](https://img.shields.io/npm/v/folderplus)
+![license](https://img.shields.io/npm/l/folderplus)
+![downloads](https://img.shields.io/npm/dm/folderplus)
+![license](https://img.shields.io/npm/l/folderplus)
+![install size](https://packagephobia.com/badge?p=folderplus)
+![bundle size](https://img.shields.io/bundlephobia/min/folderplus)
+![Node.js](https://img.shields.io/node/v/folderplus)
 
-## ✨ Features
+# Cross-platform support:
 
-- Beautiful project tree with icons
-- Filter files or directories only
-- Supports `.gitignore` automatically
-- Filter by file extensions
-- Exclude unwanted extensions
-- Sorting by name or type
-- JSON output for tooling and automation
-- Fast and lightweight
-- Cross-platform: Windows, Linux, macOS
+  * Windows
+  * Linux
+  * macOS
 
----
+# Preview
 
-## 📦 Installation
+![FolderPlus Demo](./assets/demo.png)
 
-```
+# Installation
+
+### npm
+
+```bash
 npm install -g folderplus@latest
 ```
+
+### pnpm
+
+```bash
+pnpm add -g folderplus
 ```
+
+### Yarn
+
+```bash
+yarn global add folderplus
+```
+
+### Bun
+
+```bash
+bun add -g folderplus
+```
+
+### Local Installation
+
+```bash
 npm install folderplus
 ```
 
-Verify installation:
+# Verify Installation
 
-```
+```bash
 folderplus version
 ```
-# 🚀 Usage
-
-- Basic tree
+```bash
+or
 ```
+
+```bash
+folderplus --version
+```
+
+# Usage
+
+### Basic tree
+
+```bash
 folderplus tree
 ```
 
-- Files only
-```
+### Files only
+
+```bash
 folderplus tree --files-only
 ```
-- Directories only
-```
+
+### Directories only
+
+```bash
 folderplus tree --dirs-only
 ```
 
-- Limit depth
-```
+### Limit depth
+
+```bash
 folderplus tree --depth 2
 ```
 
+### Filter extensions
 
-# 🎛️ Options
+```bash
+folderplus tree --only js,ts
+```
 
-| Flag | Description |
-|---|---|
-| `--all` | Show hidden files and folders |
-| `--no-icons` | Disable icons |
-| `--files-only` | Show only files |
-| `--dirs-only` | Show only directories |
-| `--depth <n>` | Limit tree depth |
-| `--only <ext>` | Filter by extensions, e.g. `js,ts` |
+### Ignore directories
+
+```bash
+folderplus tree --ignore dist,build,temp
+```
+
+### JSON output
+
+```bash
+folderplus tree --json
+```
+
+# Options
+
+| Flag              | Description                            |
+| ----------------- | -------------------------------------- |
+| `--all`           | Show hidden files and folders          |
+| `--no-icons`      | Disable icons                          |
+| `--files-only`    | Show only files                        |
+| `--dirs-only`     | Show only directories                  |
+| `--depth <n>`     | Limit tree depth                       |
+| `--only <ext>`    | Filter by extensions, e.g. `js,ts`     |
 | `--ignore <dirs>` | Exclude directories, e.g. `dist,build` |
-| `--json` | Output tree as JSON |
+| `--json`          | Output tree as JSON                    |
 
 ---
 
-## 🧾 JSON Output Example
+# JSON Output Example
 
-```
+```bash
 folderplus tree --json
 ```
-```
-Json
+
+```json
 {
   "name": "project",
   "type": "directory",
   "children": [
-    { "name": "src", "type": "directory" },
-    { "name": "index.js", "type": "file" }
+    {
+      "name": "src",
+      "type": "directory"
+    },
+    {
+      "name": "index.js",
+      "type": "file"
+    }
   ]
 }
 ```
 
 ---
 
-## 🧠 Ignore Behavior
+# Ignore Behavior
 
-By default, folderplus ignores:
+By default, FolderPlus ignores:
 
-- `node_modules`
-- `.git`
-- Entries listed in `.gitignore`
+* `node_modules`
+* `.git`
+* Entries listed inside `.gitignore`
 
-Add custom ignores:
+Custom ignores:
+
+```bash
+folderplus tree --ignore dist,build,temp
 ```
---ignore dist,build,temp
+
+# Use Cases
+
+- Visualize large codebases.
+- Generate project structure for documentation.
+- Export project trees as JSON.
+- Quickly inspect repositories.
+- Improve developer workflow and debugging.
+
+# Features
+
+- Beautiful project tree with icons.
+- Filter files or directories only.
+- Automatic `.gitignore` support.
+- Filter by file extensions.
+- Exclude unwanted directories and files.
+- Sorting by name or type.
+- JSON output for tooling and automation.
+- Fast and lightweight.
+
+
+# Help
+
+```bash
+folderplus --help
 ```
 
----
+# License
 
-## Author
+![license](https://img.shields.io/npm/l/folderplus)
 
-Maintained by [@smoriginals](https://github.com/smoriginals)
+# Author
+
+Maintained by [__SMORIGINALS__](https://github.com/smoriginals)

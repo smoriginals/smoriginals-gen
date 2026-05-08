@@ -3,14 +3,14 @@
 // src/index.ts
 import chalk from "chalk";
 function status() {
-  return "O_O @SMORIGINALS folderplus O_O";
+  return "[ folderplus - Ok ]";
 }
 function version() {
-  return "v0.1.8";
+  return "v2.0.1";
 }
 function help() {
   return `
-${chalk.bold.cyan("folderplus")} ${chalk.dim("O_O Developer utility CLI")}
+${chalk.bold.cyan("folderplus")} ${chalk.dim("Developer utility CLI")}
 
 ${chalk.bold("Usage:")}
   folderplus <command> [options]
@@ -32,7 +32,7 @@ ${chalk.bold("Tree Options:")}
 
 ${chalk.bold("Examples:")}
   folderplus tree
-  folderplus tree --depth 3
+  folderplus tree --depth 2
   folderplus tree --ignore node_modules,dist
   folderplus tree --files-only
   folderplus tree --dirs-only
@@ -43,9 +43,9 @@ ${chalk.bold("Examples:")}
 }
 
 // src/tree.ts
+import chalk3 from "chalk";
 import * as fs from "fs";
 import * as path from "path";
-import chalk3 from "chalk";
 
 // src/fileStyle.ts
 import chalk2 from "chalk";

@@ -1,40 +1,60 @@
 {
-    "name": "folderplus",
-    "version": "0.1.9",
-    "description": "CLI utility for developers: trim code context, generate folder trees, and more",
-    "main": "./dist/index.mjs",
-    "types": "./dist/index.d.mts",
-    "bin": {
-        "folderplus": "./dist/cli.mjs"
-    },
-    "exports": {
-        ".": "./dist/index.js"
-    },
-    "files": [
-        "dist"
-    ],
-    "scripts": {
-        "build": "tsup",
-        "prepublishOnly": "npm run build"
-    },
-    "keywords": [
-        "cli",
-        "tree",
-        "folder-structure",
-        "developer-tools"
-    ],
-    "author": "smoriginals",
-    "license": "MIT",
-    "engines": {
-        "node": ">=18"
-    },
-    "dependencies": {
-        "chalk": "^5.3.0"
-    },
-    "devDependencies": {
-        "@types/node": "^20.11.0",
-        "eslint": "^10.1.0",
-        "tsup": "^8.5.1",
-        "typescript": "^5.3.3"
-    }
+  "name": "folderplus",
+  "version": "2.0.1",
+  "description": "Modern developer-friendly CLI tool to visualize project structures with icons, filtering, sorting, JSON output, and .gitignore support",
+  "homepage": "https://github.com/smoriginals/folderplus",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smoriginals/folderplus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/smoriginals/folderplus/issues"
+  },
+
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "bin": {
+    "folderplus": "./dist/cli.mjs"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "tree",
+    "cli",
+    "folder-tree",
+    "directory-tree",
+    "project-structure",
+    "filesystem",
+    "developer-tools",
+    "json-tree",
+    "nodejs-cli",
+    "folderplus",
+    "smoriginals",
+    "folderp",
+    "folderplu",
+    "folderpl",
+    "gitignore"
+  ],
+  "author": "smoriginals",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "eslint": "^10.1.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.3.3"
+  }
 }

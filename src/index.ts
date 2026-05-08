@@ -1,16 +1,16 @@
-import chalk from "chalk";
+import chalk from 'chalk'
 
 export function status() {
-    return "O_O folderplus O_O";
+    return "[ folderplus - Ok ]";
 }
 
 export function version() {
-    return "v0.1.9";
+    return "v2.0.1";
 }
 
 export function help() {
     return `
-${chalk.bold.cyan("folderplus")} ${chalk.dim("O_O Developer utility CLI")}
+${chalk.bold.cyan("folderplus")} ${chalk.dim("Developer utility CLI")}
 
 ${chalk.bold("Usage:")}
   folderplus <command> [options]
@@ -32,7 +32,7 @@ ${chalk.bold("Tree Options:")}
 
 ${chalk.bold("Examples:")}
   folderplus tree
-  folderplus tree --depth 3
+  folderplus tree --depth 2
   folderplus tree --ignore node_modules,dist
   folderplus tree --files-only
   folderplus tree --dirs-only
