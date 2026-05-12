@@ -123,6 +123,19 @@ folderplus tree --only js,ts
 folderplus tree --ignore dist,build,temp
 ```
 
+## Include all entries
+
+```bash
+folderplus tree --all
+```
+
+## Sort output
+
+```bash
+folderplus tree --sort name
+folderplus tree --sort type
+```
+
 ## JSON output
 
 ```bash
@@ -136,8 +149,10 @@ folderplus tree --json
 | Flag              | Description                            |
 | ----------------- | -------------------------------------- |
 | `--no-icons`      | Disable icons                          |
+| `--all`           | Include entries normally ignored       |
 | `--files-only`    | Show only files                        |
 | `--dirs-only`     | Show only directories                  |
+| `--sort <mode>`   | Sort by `name` or `type`               |
 | `--depth <n>`     | Limit tree depth                       |
 | `--only <ext>`    | Filter by extensions, e.g. `js,ts`     |
 | `--ignore <dirs>` | Exclude directories, e.g. `dist,build` |
@@ -183,7 +198,7 @@ By default, FolderPlus ignores:
 
 - `node_modules`
 - `.git`
-- Basic entries listed inside the root `.gitignore`
+- Patterns listed in `.gitignore` files (root and nested)
 
 Custom ignores:
 
@@ -191,7 +206,8 @@ Custom ignores:
 folderplus tree --ignore dist,build,temp
 ```
 
-> Current `.gitignore` support handles simple root-level entry names and does not currently support advanced glob patterns or negation rules.
+> Supports gitignore-style glob patterns and negation (for example: `*.log` and `!important.log`).
+> Use `--all` to bypass default and `.gitignore` exclusions. Explicit `--ignore` still applies with `--all`.
 
 ---
 
