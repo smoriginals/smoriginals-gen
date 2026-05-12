@@ -1,11 +1,26 @@
 import chalk from 'chalk'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+// @ts-ignore TS1470: tsup dts treats this file as CommonJS during declaration emit.
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const packageJsonPath = join(__dirname, '..', 'package.json')
 
 export function status() {
     return "[ folderplus - Ok ]";
 }
 
 export function version() {
-    return "v2.0.3";
+    try {
+        const pkg = JSON.parse(readFileSync(packageJsonPath, 'utf8')) as { version?: string }
+        return typeof pkg.version === 'string' && pkg.version.length > 0
+            ? `v${pkg.version}`
+            : 'unknown'
+    } catch {
+        return 'unknown'
+    }
 }
 
 export function help() {
@@ -23,7 +38,9 @@ ${chalk.bold("Commands:")}
 
 ${chalk.bold("Tree Options:")}
   ${chalk.yellow("--depth <n>")}            Limit directory depth
+  ${chalk.yellow("--all")}                  Include entries normally ignored by defaults/.gitignore
   ${chalk.yellow("--ignore <a,b,c>")}       Ignore files or folders
+  ${chalk.yellow("--sort <name|type>")}     Sort by name or by type (dirs first)
   ${chalk.yellow("--files-only")}           Show only files
   ${chalk.yellow("--dirs-only")}            Show only directories
   ${chalk.yellow("--only <ext,ext>")}       Show only files with given extensions
@@ -33,6 +50,8 @@ ${chalk.bold("Tree Options:")}
 ${chalk.bold("Examples:")}
   folderplus tree
   folderplus tree --depth 2
+  folderplus tree --all
+  folderplus tree --sort type
   folderplus tree --ignore node_modules,dist
   folderplus tree --files-only
   folderplus tree --dirs-only

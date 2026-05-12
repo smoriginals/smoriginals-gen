@@ -1,9 +1,10 @@
 import * as path from "path";
+import * as fs from "fs";
 import { status, version, help } from "./index.js";
 import { generateTree } from "./tree.js";
 import { generateJsonTree } from "./jsonTree.js";
-import { readGitIgnore } from "./ignore.js";
-import { TreeFilter } from "./types.js";
+import { createIgnoreMatcher } from "./ignore.js";
+import { TreeFilter, TreeSort } from "./types.js";
 
 
 const args = process.argv.slice(2);
@@ -31,17 +32,12 @@ switch (args[0]) {
         break;
 
     case "tree": {
+        const all = args.includes("--all");
         const ignoreArg = getArgValue("--ignore");
         const extraIgnore = ignoreArg
             ? ignoreArg.split(",").map(s => s.trim()).filter(Boolean)
             : [];
-
-        const ignore = new Set<string>([
-            "node_modules",
-            ".git",
-            ...readGitIgnore(cwd),
-            ...extraIgnore
-        ]);
+        const shouldIgnore = createIgnoreMatcher(cwd, all, extraIgnore);
 
         const depthArg = getArgValue("--depth");
         const parsedDepth = depthArg !== undefined ? Number(depthArg) : NaN;
@@ -61,11 +57,24 @@ switch (args[0]) {
             ? new Set(onlyArg.split(",").map(s => s.trim()).filter(Boolean))
             : undefined;
 
+        const sortArg = getArgValue("--sort");
+        const sort: TreeSort | undefined = sortArg === undefined
+            ? undefined
+            : sortArg === "name" || sortArg === "type"
+                ? sortArg
+                : undefined;
+        if (sortArg !== undefined && sort === undefined) {
+            fs.writeSync(2, `Invalid value for --sort: "${sortArg}". Expected one of: name, type.\n`);
+            process.exit(1);
+        }
+
+        const options = { filter, sort };
+
         if (args.includes("--json")) {
-            const tree = generateJsonTree(cwd, ignore, 0, maxDepth, filter, onlyExts);
+            const tree = generateJsonTree(cwd, cwd, shouldIgnore, 0, maxDepth, options.filter, options.sort, onlyExts);
             console.log(JSON.stringify(tree, null, 2));
         } else {
-            generateTree(cwd, "", ignore, filter, 0, maxDepth, icons, onlyExts);
+            generateTree(cwd, cwd, "", shouldIgnore, options.filter, options.sort, 0, maxDepth, icons, onlyExts);
         }
         break;
     }
