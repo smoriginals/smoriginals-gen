@@ -1,7 +1,7 @@
 {
   "name": "folderplus",
-  "version": "2.0.2",
-  "description": "Modern developer-friendly CLI tool to visualize project structures with icons, filtering, sorting, JSON output, and .gitignore support",
+  "version": "2.0.3",
+  "description": "Modern developer-friendly CLI tool to visualize project structures with filtering, JSON output, icons, and customizable ignore rules",
   "homepage": "https://github.com/smoriginals/folderplus",
   "repository": {
     "type": "git",
@@ -16,10 +16,12 @@
     "folderplus": "./dist/cli.mjs"
   },
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.mjs"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
@@ -35,12 +37,12 @@
     "developer-tools",
     "json-tree",
     "nodejs-cli",
+    "gitignore",
+    "terminal",
+    "file-explorer",
+    "directory-visualizer",
     "folderplus",
-    "smoriginals",
-    "folderp",
-    "folderplu",
-    "folderpl",
-    "gitignore"
+    "smoriginals"
   ],
   "author": "smoriginals",
   "license": "MIT",

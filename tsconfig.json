@@ -1,15 +1,16 @@
 {
-    "compilerOptions": {
-        "target": "es2020",
-        "module": "nodenext",
-        "moduleResolution": "nodenext",
-        "declaration": true,
-        "outDir": "dist",
-        "rootDir": "src",
-        "strict": true,
-        "types": [ "node" ],
-        "esModuleInterop": true,
-        "skipLibCheck": true
-    },
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "types": [ "node" ],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
     "exclude": [ "node_modules", "dist" ]
 }

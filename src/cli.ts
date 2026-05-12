@@ -5,6 +5,7 @@ import { generateJsonTree } from "./jsonTree.js";
 import { readGitIgnore } from "./ignore.js";
 import { TreeFilter } from "./types.js";
 
+
 const args = process.argv.slice(2);
 const cwd = process.cwd();
 

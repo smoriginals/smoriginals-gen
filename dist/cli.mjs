@@ -6,7 +6,7 @@ function status() {
   return "[ folderplus - Ok ]";
 }
 function version() {
-  return "v2.0.2";
+  return "v2.0.3";
 }
 function help() {
   return `
