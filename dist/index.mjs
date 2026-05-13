@@ -1,10 +1,21 @@
 // src/index.ts
 import chalk from "chalk";
+import { readFileSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+var __filename = fileURLToPath(import.meta.url);
+var __dirname = dirname(__filename);
+var packageJsonPath = join(__dirname, "..", "package.json");
 function status() {
   return "[ folderplus - Ok ]";
 }
 function version() {
-  return "v2.0.3";
+  try {
+    const pkg = JSON.parse(readFileSync(packageJsonPath, "utf8"));
+    return typeof pkg.version === "string" && pkg.version.length > 0 ? `v${pkg.version}` : "unknown";
+  } catch {
+    return "unknown";
+  }
 }
 function help() {
   return `
@@ -21,7 +32,9 @@ ${chalk.bold("Commands:")}
 
 ${chalk.bold("Tree Options:")}
   ${chalk.yellow("--depth <n>")}            Limit directory depth
+  ${chalk.yellow("--all")}                  Include entries normally ignored by defaults/.gitignore
   ${chalk.yellow("--ignore <a,b,c>")}       Ignore files or folders
+  ${chalk.yellow("--sort <name|type>")}     Sort by name or by type (dirs first)
   ${chalk.yellow("--files-only")}           Show only files
   ${chalk.yellow("--dirs-only")}            Show only directories
   ${chalk.yellow("--only <ext,ext>")}       Show only files with given extensions
@@ -31,6 +44,8 @@ ${chalk.bold("Tree Options:")}
 ${chalk.bold("Examples:")}
   folderplus tree
   folderplus tree --depth 2
+  folderplus tree --all
+  folderplus tree --sort type
   folderplus tree --ignore node_modules,dist
   folderplus tree --files-only
   folderplus tree --dirs-only

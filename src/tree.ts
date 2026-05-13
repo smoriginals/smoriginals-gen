@@ -3,22 +3,52 @@
 import * as fs from "fs";
 import * as path from "path";
 import { FILE_STYLES } from './fileStyle.js';
-import { TreeFilter } from "./types.js";
+import { IgnoreMatcher, TreeFilter, TreeSort } from "./types.js";
+
+function sortEntries(entries: fs.Dirent[], sort?: TreeSort): fs.Dirent[] {
+    if (!sort) return entries;
+
+    const compareNames = (aName: string, bName: string): number => {
+        const aLower = aName.toLowerCase();
+        const bLower = bName.toLowerCase();
+
+        if (aLower < bLower) return -1;
+        if (aLower > bLower) return 1;
+        if (aName < bName) return -1;
+        if (aName > bName) return 1;
+        return 0;
+    };
+
+    return [...entries].sort((a, b) => {
+        if (sort === "type") {
+            if (a.isDirectory() && !b.isDirectory()) return -1;
+            if (!a.isDirectory() && b.isDirectory()) return 1;
+        }
+
+        return compareNames(a.name, b.name);
+    });
+}
 
 export function generateTree(
+    rootDir: string,
     dir: string,
     prefix = "",
-    ignore: Set<string> = new Set(),
+    shouldIgnore?: IgnoreMatcher,
     filter: TreeFilter = "all",
+    sort?: TreeSort,
     depth = 0,
     maxDepth = Infinity,
     icons = true,
     onlyExts?: Set<string>
 ): void {
 
-    const entries = fs
+    const entries = sortEntries(fs
         .readdirSync(dir, { withFileTypes: true })
-        .filter(entry => !ignore.has(entry.name));
+        .filter((entry) => {
+            if (!shouldIgnore) return true;
+            const relativePath = path.relative(rootDir, path.join(dir, entry.name));
+            return !shouldIgnore(relativePath, entry.isDirectory());
+        }), sort);
 
     entries.forEach((entry, index) => {
         const isLast = index === entries.length - 1;
@@ -35,7 +65,7 @@ export function generateTree(
 
             if (depth + 1 < maxDepth) {
                 const newPrefix = prefix + (isLast ? "   " : "│  ");
-                generateTree(fullPath, newPrefix, ignore, filter, depth + 1, maxDepth, icons, onlyExts);
+                generateTree(rootDir, fullPath, newPrefix, shouldIgnore, filter, sort, depth + 1, maxDepth, icons, onlyExts);
             }
             return;
         }

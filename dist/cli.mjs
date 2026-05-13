@@ -1,12 +1,26 @@
 #!/usr/bin/env node
 
+// src/cli.ts
+import * as fs4 from "fs";
+
 // src/index.ts
 import chalk from "chalk";
+import { readFileSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+var __filename = fileURLToPath(import.meta.url);
+var __dirname = dirname(__filename);
+var packageJsonPath = join(__dirname, "..", "package.json");
 function status() {
   return "[ folderplus - Ok ]";
 }
 function version() {
-  return "v2.0.3";
+  try {
+    const pkg = JSON.parse(readFileSync(packageJsonPath, "utf8"));
+    return typeof pkg.version === "string" && pkg.version.length > 0 ? `v${pkg.version}` : "unknown";
+  } catch {
+    return "unknown";
+  }
 }
 function help() {
   return `
@@ -23,7 +37,9 @@ ${chalk.bold("Commands:")}
 
 ${chalk.bold("Tree Options:")}
   ${chalk.yellow("--depth <n>")}            Limit directory depth
+  ${chalk.yellow("--all")}                  Include entries normally ignored by defaults/.gitignore
   ${chalk.yellow("--ignore <a,b,c>")}       Ignore files or folders
+  ${chalk.yellow("--sort <name|type>")}     Sort by name or by type (dirs first)
   ${chalk.yellow("--files-only")}           Show only files
   ${chalk.yellow("--dirs-only")}            Show only directories
   ${chalk.yellow("--only <ext,ext>")}       Show only files with given extensions
@@ -33,6 +49,8 @@ ${chalk.bold("Tree Options:")}
 ${chalk.bold("Examples:")}
   folderplus tree
   folderplus tree --depth 2
+  folderplus tree --all
+  folderplus tree --sort type
   folderplus tree --ignore node_modules,dist
   folderplus tree --files-only
   folderplus tree --dirs-only
@@ -88,8 +106,31 @@ var FILE_STYLES = {
 };
 
 // src/tree.ts
-function generateTree(dir, prefix = "", ignore = /* @__PURE__ */ new Set(), filter = "all", depth = 0, maxDepth = Infinity, icons = true, onlyExts) {
-  const entries = fs.readdirSync(dir, { withFileTypes: true }).filter((entry) => !ignore.has(entry.name));
+function sortEntries(entries, sort) {
+  if (!sort) return entries;
+  const compareNames = (aName, bName) => {
+    const aLower = aName.toLowerCase();
+    const bLower = bName.toLowerCase();
+    if (aLower < bLower) return -1;
+    if (aLower > bLower) return 1;
+    if (aName < bName) return -1;
+    if (aName > bName) return 1;
+    return 0;
+  };
+  return [...entries].sort((a, b) => {
+    if (sort === "type") {
+      if (a.isDirectory() && !b.isDirectory()) return -1;
+      if (!a.isDirectory() && b.isDirectory()) return 1;
+    }
+    return compareNames(a.name, b.name);
+  });
+}
+function generateTree(rootDir, dir, prefix = "", shouldIgnore, filter = "all", sort, depth = 0, maxDepth = Infinity, icons = true, onlyExts) {
+  const entries = sortEntries(fs.readdirSync(dir, { withFileTypes: true }).filter((entry) => {
+    if (!shouldIgnore) return true;
+    const relativePath = path.relative(rootDir, path.join(dir, entry.name));
+    return !shouldIgnore(relativePath, entry.isDirectory());
+  }), sort);
   entries.forEach((entry, index) => {
     const isLast = index === entries.length - 1;
     const pointer = isLast ? "\u2514\u2500 " : "\u251C\u2500 ";
@@ -102,7 +143,7 @@ function generateTree(dir, prefix = "", ignore = /* @__PURE__ */ new Set(), filt
       }
       if (depth + 1 < maxDepth) {
         const newPrefix = prefix + (isLast ? "   " : "\u2502  ");
-        generateTree(fullPath, newPrefix, ignore, filter, depth + 1, maxDepth, icons, onlyExts);
+        generateTree(rootDir, fullPath, newPrefix, shouldIgnore, filter, sort, depth + 1, maxDepth, icons, onlyExts);
       }
       return;
     }
@@ -124,17 +165,45 @@ function generateTree(dir, prefix = "", ignore = /* @__PURE__ */ new Set(), filt
 // src/jsonTree.ts
 import * as fs2 from "fs";
 import * as path2 from "path";
-function generateJsonTree(dir, ignore, depth, maxDepth, filter = "all", onlyExts) {
+function sortEntries2(entries, sort) {
+  if (!sort) return entries;
+  const compareNames = (aName, bName) => {
+    const aLower = aName.toLowerCase();
+    const bLower = bName.toLowerCase();
+    if (aLower < bLower) return -1;
+    if (aLower > bLower) return 1;
+    if (aName < bName) return -1;
+    if (aName > bName) return 1;
+    return 0;
+  };
+  return [...entries].sort((a, b) => {
+    if (sort === "type") {
+      if (a.isDirectory() && !b.isDirectory()) return -1;
+      if (!a.isDirectory() && b.isDirectory()) return 1;
+    }
+    return compareNames(a.name, b.name);
+  });
+}
+function generateJsonTree(rootDir, dir, shouldIgnore, depth, maxDepth, filter = "all", sort, onlyExts) {
   const name = path2.basename(dir);
   const children = [];
-  for (const entry of fs2.readdirSync(dir, { withFileTypes: true })) {
-    if (ignore.has(entry.name)) continue;
+  for (const entry of sortEntries2(fs2.readdirSync(dir, { withFileTypes: true }), sort)) {
     const fullPath = path2.join(dir, entry.name);
+    if (shouldIgnore) {
+      const relativePath = path2.relative(rootDir, fullPath);
+      if (shouldIgnore(relativePath, entry.isDirectory())) continue;
+    }
     if (entry.isDirectory()) {
-      if (filter !== "files") {
-        const child = depth + 1 < maxDepth ? generateJsonTree(fullPath, ignore, depth + 1, maxDepth, filter, onlyExts) : { name: entry.name, type: "directory", children: [] };
+      const child = depth + 1 < maxDepth ? generateJsonTree(rootDir, fullPath, shouldIgnore, depth + 1, maxDepth, filter, sort, onlyExts) : { name: entry.name, type: "directory", children: [] };
+      if (filter === "dirs") {
         children.push(child);
+        continue;
       }
+      if (filter === "files") {
+        if (child.children.length > 0) children.push(child);
+        continue;
+      }
+      children.push(child);
     } else {
       if (filter !== "dirs") {
         const ext = path2.extname(entry.name).slice(1);
@@ -150,17 +219,84 @@ function generateJsonTree(dir, ignore, depth, maxDepth, filter = "all", onlyExts
 // src/ignore.ts
 import * as fs3 from "fs";
 import * as path3 from "path";
-function readGitIgnore(root) {
-  const ignore = /* @__PURE__ */ new Set();
-  const gitignorePath = path3.join(root, ".gitignore");
-  if (!fs3.existsSync(gitignorePath)) return ignore;
-  const content = fs3.readFileSync(gitignorePath, "utf-8");
-  for (const line of content.split("\n")) {
-    const rule = line.trim();
-    if (!rule || rule.startsWith("#")) continue;
-    ignore.add(rule.replace(/\/$/, ""));
+import ignore from "ignore";
+function toPosix(p) {
+  return p.split(path3.sep).join("/");
+}
+function normalizeRule(rule, base) {
+  const trimmed = rule.trim();
+  if (!trimmed || trimmed.startsWith("#")) return null;
+  const negated = trimmed.startsWith("!");
+  const raw = negated ? trimmed.slice(1) : trimmed;
+  if (!raw) return null;
+  const dirOnly = raw.endsWith("/");
+  const core = dirOnly ? raw.slice(0, -1) : raw;
+  if (!core) return null;
+  let normalized;
+  if (core.includes("/")) {
+    if (core.startsWith("/")) {
+      normalized = base ? `${base}/${core.slice(1)}` : core.slice(1);
+    } else {
+      normalized = base ? `${base}/${core}` : core;
+    }
+  } else {
+    normalized = base ? `${base}/**/${core}` : `**/${core}`;
   }
-  return ignore;
+  if (dirOnly) normalized += "/";
+  return negated ? `!${normalized}` : normalized;
+}
+function readRulesAt(root, base) {
+  const gitignorePath = path3.join(root, base, ".gitignore");
+  if (!fs3.existsSync(gitignorePath)) return [];
+  const out = [];
+  const content = fs3.readFileSync(gitignorePath, "utf8");
+  for (const line of content.split("\n")) {
+    const normalized = normalizeRule(line, toPosix(base));
+    if (normalized) out.push(normalized);
+  }
+  return out;
+}
+function getAncestorBases(relativePath, isDirectory) {
+  const posixRel = toPosix(relativePath);
+  if (!posixRel || posixRel === ".") return [""];
+  const target = isDirectory ? posixRel : path3.posix.dirname(posixRel);
+  if (!target || target === ".") return [""];
+  const segments = target.split("/").filter(Boolean);
+  const bases = [""];
+  for (let i = 0; i < segments.length; i += 1) {
+    bases.push(segments.slice(0, i + 1).join("/"));
+  }
+  return bases;
+}
+function hasDefaultIgnoredSegment(relativePath) {
+  const segments = toPosix(relativePath).split("/").filter(Boolean);
+  return segments.includes("node_modules") || segments.includes(".git");
+}
+function createIgnoreMatcher(root, all, extraIgnore) {
+  const rulesCache = /* @__PURE__ */ new Map();
+  const extraRules = extraIgnore.map((line) => normalizeRule(line, "")).filter((line) => Boolean(line));
+  return (relativePath, isDirectory) => {
+    const posixRel = toPosix(relativePath);
+    if (!posixRel || posixRel === ".") return false;
+    if (!all && hasDefaultIgnoredSegment(posixRel)) {
+      return true;
+    }
+    const ig = ignore();
+    if (!all) {
+      for (const base of getAncestorBases(posixRel, isDirectory)) {
+        if (!rulesCache.has(base)) {
+          rulesCache.set(base, readRulesAt(root, base));
+        }
+        const baseRules = rulesCache.get(base);
+        if (baseRules.length > 0) ig.add(baseRules);
+      }
+    }
+    if (extraRules.length > 0) {
+      ig.add(extraRules);
+    }
+    const candidate = isDirectory ? `${posixRel}/` : posixRel;
+    return ig.ignores(candidate);
+  };
 }
 
 // src/cli.ts
@@ -184,14 +320,10 @@ switch (args[0]) {
     console.log(version());
     break;
   case "tree": {
+    const all = args.includes("--all");
     const ignoreArg = getArgValue("--ignore");
     const extraIgnore = ignoreArg ? ignoreArg.split(",").map((s) => s.trim()).filter(Boolean) : [];
-    const ignore = /* @__PURE__ */ new Set([
-      "node_modules",
-      ".git",
-      ...readGitIgnore(cwd),
-      ...extraIgnore
-    ]);
+    const shouldIgnore = createIgnoreMatcher(cwd, all, extraIgnore);
     const depthArg = getArgValue("--depth");
     const parsedDepth = depthArg !== void 0 ? Number(depthArg) : NaN;
     const maxDepth = !isNaN(parsedDepth) && parsedDepth >= 0 ? parsedDepth : Infinity;
@@ -199,11 +331,19 @@ switch (args[0]) {
     const icons = !args.includes("--no-icons");
     const onlyArg = getArgValue("--only");
     const onlyExts = onlyArg ? new Set(onlyArg.split(",").map((s) => s.trim()).filter(Boolean)) : void 0;
+    const sortArg = getArgValue("--sort");
+    const sort = sortArg === void 0 ? void 0 : sortArg === "name" || sortArg === "type" ? sortArg : void 0;
+    if (sortArg !== void 0 && sort === void 0) {
+      fs4.writeSync(2, `Invalid value for --sort: "${sortArg}". Expected one of: name, type.
+`);
+      process.exit(1);
+    }
+    const options = { filter, sort };
     if (args.includes("--json")) {
-      const tree = generateJsonTree(cwd, ignore, 0, maxDepth, filter, onlyExts);
+      const tree = generateJsonTree(cwd, cwd, shouldIgnore, 0, maxDepth, options.filter, options.sort, onlyExts);
       console.log(JSON.stringify(tree, null, 2));
     } else {
-      generateTree(cwd, "", ignore, filter, 0, maxDepth, icons, onlyExts);
+      generateTree(cwd, cwd, "", shouldIgnore, options.filter, options.sort, 0, maxDepth, icons, onlyExts);
     }
     break;
   }
