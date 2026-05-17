@@ -2,7 +2,9 @@
 
 Modern developer-friendly CLI tool to visualize project structures with filtering, JSON output, icons, and customizable ignore rules.
 
-![FolderPlus Logo](./assets/logo.png)
+<div align="center">
+  <img src="./assets/logo.png" alt="FolderPlus Logo"/>
+</div>
 
 ![npm version](https://img.shields.io/npm/v/folderplus)
 ![license](https://img.shields.io/npm/l/folderplus)
@@ -32,7 +34,7 @@ Modern developer-friendly CLI tool to visualize project structures with filterin
 ## npm
 
 ```bash
-npm install -g folderplus@latest
+npm install -g folderplus
 ```
 
 ## pnpm
@@ -53,10 +55,11 @@ yarn global add folderplus
 bun add -g folderplus
 ```
 
-## Local Installation
+## Run Locally
 
 ```bash
-npm install folderplus
+npx folderplus
+npx folderplus <command> [options]
 ```
 
 ---

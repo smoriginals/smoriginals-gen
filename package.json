@@ -1,6 +1,6 @@
 {
   "name": "folderplus",
-  "version": "2.0.3-a",
+  "version": "2.0.4",
   "description": "Modern developer-friendly CLI tool to visualize project structures with filtering, JSON output, icons, and customizable ignore rules",
   "homepage": "https://github.com/smoriginals/folderplus",
   "repository": {
