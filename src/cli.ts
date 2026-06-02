@@ -1,4 +1,4 @@
-import * as path from "path";
+﻿import * as path from "path";
 import * as fs from "fs";
 import { status, version, help } from "./index.js";
 import { generateTree } from "./tree.js";
@@ -30,7 +30,9 @@ switch (args[0]) {
     case "version":
         console.log(version());
         break;
-
+    case "-v":
+        console.log(version());
+        break;
     case "tree": {
         const all = args.includes("--all");
         const ignoreArg = getArgValue("--ignore");

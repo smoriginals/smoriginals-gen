@@ -106,6 +106,84 @@ var FILE_STYLES = {
 };
 
 // src/tree.ts
+function getFileSize(filePath) {
+  try {
+    const stats = fs.statSync(filePath);
+    return formatBytes(stats.size);
+  } catch {
+    return "";
+  }
+}
+function getDirectorySize(dirPath) {
+  let totalSize = 0;
+  try {
+    const items = fs.readdirSync(dirPath);
+    for (const item of items) {
+      const itemPath = path.join(dirPath, item);
+      const stats = fs.statSync(itemPath);
+      if (stats.isFile()) {
+        totalSize += stats.size;
+      } else if (stats.isDirectory() && item !== "node_modules" && item !== ".git") {
+        totalSize += getDirectorySize(itemPath);
+      }
+    }
+  } catch (error) {
+  }
+  return totalSize;
+}
+function getFormattedDirectorySize(dirPath) {
+  const size = getDirectorySize(dirPath);
+  if (size === 0) return "";
+  return chalk3.gray(` [${formatBytes(size)}]`);
+}
+function getImportCount(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+  const sourceExts = [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"];
+  if (!sourceExts.includes(ext)) return 0;
+  try {
+    const content = fs.readFileSync(filePath, "utf-8");
+    const matches = content.match(/import\s+.*?from\s+['"][^'"]+['"]|require\s*\(\s*['"][^'"]+['"]\s*\)/g);
+    return matches ? matches.length : 0;
+  } catch {
+    return 0;
+  }
+}
+function formatBytes(bytes) {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+}
+function printSummary(rootDir, currentDir) {
+  const scanDir = currentDir;
+  let totalFolders = 0;
+  let totalFiles = 0;
+  let totalSize = 0;
+  function walk(dir) {
+    try {
+      const items = fs.readdirSync(dir);
+      for (const item of items) {
+        const itemPath = path.join(dir, item);
+        const stats = fs.statSync(itemPath);
+        if (stats.isDirectory()) {
+          if (item !== "node_modules" && item !== ".git") {
+            totalFolders++;
+            walk(itemPath);
+          }
+        } else if (stats.isFile()) {
+          totalFiles++;
+          totalSize += stats.size;
+        }
+      }
+    } catch (error) {
+    }
+  }
+  walk(scanDir);
+  console.log(chalk3.bold("\n" + "=".repeat(50)));
+  console.log(chalk3.bold(`\u{1F4CA} ${totalFolders} folders, ${totalFiles} files, ${formatBytes(totalSize)}`));
+  console.log(chalk3.bold("=".repeat(50)));
+}
 function sortEntries(entries, sort) {
   if (!sort) return entries;
   const compareNames = (aName, bName) => {
@@ -128,7 +206,8 @@ function sortEntries(entries, sort) {
 function generateTree(rootDir, dir, prefix = "", shouldIgnore, filter = "all", sort, depth = 0, maxDepth = Infinity, icons = true, onlyExts) {
   const entries = sortEntries(fs.readdirSync(dir, { withFileTypes: true }).filter((entry) => {
     if (!shouldIgnore) return true;
-    const relativePath = path.relative(rootDir, path.join(dir, entry.name));
+    const fullPath = path.join(dir, entry.name);
+    const relativePath = path.relative(rootDir, fullPath);
     return !shouldIgnore(relativePath, entry.isDirectory());
   }), sort);
   entries.forEach((entry, index) => {
@@ -138,7 +217,8 @@ function generateTree(rootDir, dir, prefix = "", shouldIgnore, filter = "all", s
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       if (filter !== "files") {
-        const label = icons ? `\u{1F4C1} ${chalk3.bold.yellow(entry.name)}` : chalk3.bold.yellow(entry.name);
+        const sizeInfo = getFormattedDirectorySize(fullPath);
+        const label = icons ? `\u{1F4C1} ${chalk3.bold.yellow(entry.name)}${sizeInfo}` : `${chalk3.bold.yellow(entry.name)}${sizeInfo}`;
         console.log(line + label);
       }
       if (depth + 1 < maxDepth) {
@@ -151,15 +231,22 @@ function generateTree(rootDir, dir, prefix = "", shouldIgnore, filter = "all", s
       const ext = path.extname(entry.name).slice(1);
       if (onlyExts && !onlyExts.has(ext)) return;
       const style = FILE_STYLES[ext];
+      const sizeInfo = getFileSize(fullPath);
+      const importCount = getImportCount(fullPath);
+      const sizeText = sizeInfo ? chalk3.gray(` (${sizeInfo})`) : "";
+      const importText = importCount > 0 ? chalk3.cyan(` [${importCount} imports]`) : "";
       let display;
       if (!icons) {
-        display = style ? style.color(entry.name) : chalk3.gray(entry.name);
+        display = style ? `${style.color(entry.name)}${sizeText}${importText}` : `${chalk3.gray(entry.name)}${sizeText}${importText}`;
       } else {
-        display = style ? `${style.icon} ${style.color(entry.name)}` : `\u{1F4C4} ${chalk3.gray(entry.name)}`;
+        display = style ? `${style.icon} ${style.color(entry.name)}${sizeText}${importText}` : `\u{1F4C4} ${chalk3.gray(entry.name)}${sizeText}${importText}`;
       }
       console.log(line + display);
     }
   });
+  if (depth === 0) {
+    printSummary(rootDir, dir);
+  }
 }
 
 // src/jsonTree.ts
@@ -317,6 +404,9 @@ switch (args[0]) {
     console.log(status());
     break;
   case "version":
+    console.log(version());
+    break;
+  case "-v":
     console.log(version());
     break;
   case "tree": {

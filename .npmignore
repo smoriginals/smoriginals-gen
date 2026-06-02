@@ -1,0 +1,7 @@
+src/
+tests/
+.github/
+.vscode/
+coverage/
+node_modules/
+*.log
