@@ -26,6 +26,7 @@ export const FILE_STYLES: Record<string, FileStyle> = {
     // Systems
     c: { icon: "📀", color: chalk.blueBright },
     cpp: { icon: "💻", color: chalk.cyan },
+    cs: { icon: "🦠", color: chalk.blueBright },
     sh: { icon: "📜", color: chalk.greenBright },
     ruby: { icon: "💎", color: chalk.red },
 

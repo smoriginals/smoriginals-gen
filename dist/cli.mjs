@@ -86,6 +86,7 @@ var FILE_STYLES = {
   // Systems
   c: { icon: "\u{1F4C0}", color: chalk2.blueBright },
   cpp: { icon: "\u{1F4BB}", color: chalk2.cyan },
+  cs: { icon: "\u{1F9A0}", color: chalk2.blueBright },
   sh: { icon: "\u{1F4DC}", color: chalk2.greenBright },
   ruby: { icon: "\u{1F48E}", color: chalk2.red },
   // Data / Config

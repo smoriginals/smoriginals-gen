@@ -12,7 +12,6 @@
   },
   "license": "MIT",
   "author": "smoriginals",
-  "type": "module",
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
   "bin": {
@@ -61,6 +60,6 @@
   "devDependencies": {
     "@types/node": "^25.9.1",
     "tsup": "^8.5.1",
-    "typescript": "^6.0.3"
+    "typescript": "^5.9.3"
   }
 }

@@ -1,4 +1,4 @@
-# FolderPlus
+﻿# FolderPlus
 
 Modern developer-friendly CLI tool to visualize project structures with filtering, JSON output, icons, and customizable ignore rules.
 
@@ -26,6 +26,8 @@ Modern developer-friendly CLI tool to visualize project structures with filterin
 # Preview
 
 ![FolderPlus Demo](./assets/demo.png)
+
+#### ⚡Update • Added project statistics including file/folder counts, import analysis, size calculations, and directory-level insights for both entire projects and individual folders.
 
 ---
 
